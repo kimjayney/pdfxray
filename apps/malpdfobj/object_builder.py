@@ -88,7 +88,7 @@ def connect_to_mongo(host, port, database, collection):
 	collection = db[collection]
 	return collection
 
-def build_obj(file, dir='', output='text'):
+def build_obj(file, dir='', output='text', vt=True):
 
 	if dir != '':
 		file = dir + file
@@ -122,12 +122,15 @@ def build_obj(file, dir='', output='text'):
 		#print "Structure error"
 		fstructure = "error"
 	
-	try:
-		fvt = json.loads(get_vt_obj(vt_hash))
-	except:	
-		#print str(traceback.print_exc())
-		#print "VT error"
-		fvt = "error"
+	if (vt):
+		try:
+			fvt = json.loads(get_vt_obj(vt_hash))
+		except:	
+			#print str(traceback.print_exc())
+			#print "VT error"
+			fvt = "error"
+	else: 
+		fvt = "disabled"
 	
 	try:
 		fversion = json.loads(get_version_details(file))
@@ -163,6 +166,7 @@ def main():
 	oParser = optparse.OptionParser(usage='usage: %prog [options]\n' + __description__, version='%prog ' + __version__)
 	oParser.add_option('-f', '--file', default='', type='string', help='file to build an object from')
 	oParser.add_option('-d', '--dir', default='', type='string', help='dir to build an object from')
+	oParser.add_option('-t', '--virustotal', action='store_true', default=True, help='check with VirusTotal for detection')
 	oParser.add_option('-m', '--mongo', action='store_true', default=False, help='dump to a mongodb database')
 	oParser.add_option('-v', '--verbose', action='store_true', default=False, help='verbose outpout')
 	oParser.add_option('-a', '--auto', action='store_true', default=False, help='auto run for web portal')
