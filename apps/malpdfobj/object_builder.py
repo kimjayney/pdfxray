@@ -88,7 +88,7 @@ def connect_to_mongo(host, port, database, collection):
 	collection = db[collection]
 	return collection
 
-def build_obj(file, dir=''):
+def build_obj(file, dir='', output='text'):
 
 	if dir != '':
 		file = dir + file
@@ -150,10 +150,13 @@ def build_obj(file, dir=''):
 	try:
 		fobj = { "hash_data": fhashes, "structure": fstructure, "scans": { "virustotal": fvt, "wepawet": "null" }, "contents" : fcontents, 'related' : frelated, 'versions': fversion, 'tags': ['public'] }
 	except:
-		#print "Obj error"
 		#print str(traceback.print_exc())
+		fobj = {}
 		fail = "fail"
 
+	if output == 'obj':
+		return fobj
+		
 	return json.dumps(fobj)
 	
 def main():
