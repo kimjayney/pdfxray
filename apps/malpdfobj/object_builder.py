@@ -166,7 +166,7 @@ def main():
 	oParser = optparse.OptionParser(usage='usage: %prog [options]\n' + __description__, version='%prog ' + __version__)
 	oParser.add_option('-f', '--file', default='', type='string', help='file to build an object from')
 	oParser.add_option('-d', '--dir', default='', type='string', help='dir to build an object from')
-	oParser.add_option('-t', '--virustotal', action='store_true', default=True, help='check with VirusTotal for detection')
+	oParser.add_option('-t', '--virustotal', action='store_false', default=True, help='do NOT check with VirusTotal for detection')
 	oParser.add_option('-m', '--mongo', action='store_true', default=False, help='dump to a mongodb database')
 	oParser.add_option('-v', '--verbose', action='store_true', default=False, help='verbose outpout')
 	oParser.add_option('-a', '--auto', action='store_true', default=False, help='auto run for web portal')
@@ -180,7 +180,7 @@ def main():
 		con = connect_to_mongo("localhost", 27017, "pdfs", "pdf_repo")
 
 	if options.file:
-		output = build_obj(options.file)
+		output = build_obj(options.file, vt=options.virustotal)
 		if options.mongo:
 			con.insert(json.loads(output))
 		if options.verbose:
@@ -208,7 +208,7 @@ def main():
 					pres = 1
 				if pres != 1:
 					try:
-						output = build_obj(file, options.dir)
+						output = build_obj(file, options.dir, vt=options.virustotal)
 						if options.mongo:
 							try:
 								con.insert(json.loads(output))
@@ -240,7 +240,7 @@ def main():
 				hash = hash_maker.get_hash_data(path, "md5")
 				pres = core.find({"hash_data.file.md5":hash}).count()
 				if pres != 1:
-					output = build_obj(path)
+					output = build_obj(path, vt=options.virustotal)
 					try:
 						core.insert(json.loads(output))
 						if options.verbose:
