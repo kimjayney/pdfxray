@@ -36,8 +36,8 @@ def H(data):
     for x in range(0, 256):
         p_x = float(data_counts[x])/len_data 
 
-    if p_x > 0: 
-        entropy += - p_x*math.log(p_x, 2) 
+        if p_x > 0: 
+            entropy += - p_x*math.log(p_x, 2) 
 
     return entropy
 
@@ -91,25 +91,25 @@ def snatch_contents(file):
             details = objs[index].object
             if details.type == "stream":
                 decode_error = details.decodingError
-            if details.filter != None:
-                filter = details.filter.rawValue
-            stream_size = details.size
-            encoded_stream = details.encodedStream
-            decoded_stream = details.decodedStream
-
-            encoded_md5 = hashlib.md5(encoded_stream).hexdigest()
-            decoded_md5 = hashlib.md5(decoded_stream).hexdigest()
-            encoded_hex = ByteToHex(encoded_stream)
-            decoded_hex = ByteToHex(decoded_stream)
-
-            encoded_stream = encoder_cleaner(encoded_stream)
-            decoded_stream = encoder_cleaner(decoded_stream)
-
-            js_code = details.JSCode
-            temp_entropy = get_entropy(details.rawStream)
-            blocks = analyzer(temp_entropy)
-            out_entropy = blocks.json_blocks
-            stream_details = {'filter': filter,'size':stream_size,'encoded_stream':encoded_stream,'encoded_hash':encoded_md5,'encoded_hex':encoded_hex,'decoded_stream':decoded_stream,'decoded_hash':decoded_md5,'decoded_hex':decoded_hex,'decode_errors':decode_error,'js_code':js_code,'entropy':out_entropy,'flags':[]}
+                if details.filter != None:
+                    filter = details.filter.rawValue
+                stream_size = details.size
+                encoded_stream = details.encodedStream
+                decoded_stream = details.decodedStream
+    
+                encoded_md5 = hashlib.md5(encoded_stream).hexdigest()
+                decoded_md5 = hashlib.md5(decoded_stream).hexdigest()
+                encoded_hex = ByteToHex(encoded_stream)
+                decoded_hex = ByteToHex(decoded_stream)
+    
+                encoded_stream = encoder_cleaner(encoded_stream)
+                decoded_stream = encoder_cleaner(decoded_stream)
+    
+                js_code = details.JSCode
+                temp_entropy = get_entropy(details.rawStream)
+                blocks = analyzer(temp_entropy)
+                out_entropy = blocks.json_blocks
+                stream_details = {'filter': filter,'size':stream_size,'encoded_stream':encoded_stream,'encoded_hash':encoded_md5,'encoded_hex':encoded_hex,'decoded_stream':decoded_stream,'decoded_hash':decoded_md5,'decoded_hex':decoded_hex,'decode_errors':decode_error,'js_code':js_code,'entropy':out_entropy,'flags':[]}
             is_encrypted = details.encrypted
             contains_js = details.containsJScode
             errors = details.errors

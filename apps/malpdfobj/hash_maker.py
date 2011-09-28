@@ -12,8 +12,8 @@ def get_hash_data(file, type):
 		output = "Error"
 		
 	with open(file,'rb') as f: 
-	    for chunk in iter(lambda: f.read(8192), ''): 
-	         output.update(chunk)
+		for chunk in iter(lambda: f.read(8192), ''): 
+			output.update(chunk)
 	return output.hexdigest()
 	
 #build generic object for the file hash data

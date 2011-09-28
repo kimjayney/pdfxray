@@ -169,10 +169,10 @@ class jPdf():
 		self._file_hashes = file_hashes
 	def set_file_md5(self,file_md5):
 		self._file_md5 = file_md5
-        def set_file_sha1(self,file_sha1):
-                self._file_sha1 = file_sha1
-        def set_file_sha256(self,file_sha256):
-                self._file_sha256 = file_sha256
+	def set_file_sha1(self,file_sha1):
+		self._file_sha1 = file_sha1
+	def set_file_sha256(self,file_sha256):
+		self._file_sha256 = file_sha256
 
 	def set_contents(self,contents):
 		self._contents = contents
@@ -337,16 +337,15 @@ class jPdf():
 
 	#Grab objects at the top level or second level
 	def shallow_diver(self,json,shell):
-        	for key, value in json.iteritems():
-	               	if shell == key:
-                        	data = json.get(shell)
-	                        break
-        	        else:
-                	        if shell in value:
-                        	        data = json.get(key)
-                                	data = self.shallow_diver(data,shell)
-
-	        return data
+		for key, value in json.iteritems():
+			if shell == key:
+				data = json.get(shell)
+				break
+			else:
+				if shell in value:
+					data = json.get(key)
+					data = self.shallow_diver(data,shell)
+		return data
 
 
 class jObj():
@@ -390,8 +389,8 @@ class jObj():
 		self.generate_derived_string()
 
 	def dump_data(self,json):
-                self._contains_js = json.get("contains_js")
-                self._errors = json.get("errors")
+		self._contains_js = json.get("contains_js")
+		self._errors = json.get("errors")
 		self._stream = json.get("stream")
 		if len(self._stream) > 0:
 			self._stream_decoded_hash = self._stream.get("decoded_hash")
@@ -406,16 +405,16 @@ class jObj():
 			self._stream_size = self._stream.get("size")
 			self._stream_entropy = self._stream.get("entropy")
 			self._stream_flags = self._stream.get("flags")
-                self._raw_hash = json.get("raw_hash")
-                self._vulns = json.get("vulns")
-                self._encrypted = json.get("encrypted")
-                self._suspicious_actions = json.get("suspicious_actions")
-                self._suspicious_elements = json.get("suspicious_elements")
-                self._suspicious_events = json.get("suspicious_events")
-                self._raw = json.get("raw")
-                self._references = json.get("references")
-                self._offset = json.get("offset")
-                self._id = json.get("id")
+		self._raw_hash = json.get("raw_hash")
+		self._vulns = json.get("vulns")
+		self._encrypted = json.get("encrypted")
+		self._suspicious_actions = json.get("suspicious_actions")
+		self._suspicious_elements = json.get("suspicious_elements")
+		self._suspicious_events = json.get("suspicious_events")
+		self._raw = json.get("raw")
+		self._references = json.get("references")
+		self._offset = json.get("offset")
+		self._id = json.get("id")
 		self._size = json.get("size")
 
 		self.process_entropy(self._stream_entropy)

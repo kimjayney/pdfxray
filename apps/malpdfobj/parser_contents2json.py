@@ -19,12 +19,12 @@ def contents(file):
 	selectIndirectObject = True
 	
 	while True:
-	    object = oPDFParser.GetObject()
-	    if object != None:
+		object = oPDFParser.GetObject()
+		if object != None:
 			if object.type == PDF_ELEMENT_INDIRECT_OBJECT and selectIndirectObject:
 				content_json_objs.append(pdfparser.content2JSON(object))
-	    else:
-		    break	
+		else:
+			break	
 	
 	data = { 'object': content_json_objs }
 	result = json.dumps(data)
