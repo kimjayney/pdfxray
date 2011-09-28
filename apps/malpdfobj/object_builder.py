@@ -146,6 +146,7 @@ def build_obj(file, dir=''):
 
 	#build the object and then re-encode
 
+
 	try:
 		fobj = { "hash_data": fhashes, "structure": fstructure, "scans": { "virustotal": fvt, "wepawet": "null" }, "contents" : fcontents, 'related' : frelated, 'versions': fversion, 'tags': ['public'] }
 	except:
@@ -156,28 +157,28 @@ def build_obj(file, dir=''):
 	return json.dumps(fobj)
 	
 def main():
-    oParser = optparse.OptionParser(usage='usage: %prog [options]\n' + __description__, version='%prog ' + __version__)
-    oParser.add_option('-f', '--file', default='', type='string', help='file to build an object from')
-    oParser.add_option('-d', '--dir', default='', type='string', help='dir to build an object from')
-    oParser.add_option('-m', '--mongo', action='store_true', default=False, help='dump to a mongodb database')
-    oParser.add_option('-v', '--verbose', action='store_true', default=False, help='verbose outpout')
-    oParser.add_option('-a', '--auto', action='store_true', default=False, help='auto run for web portal')
-    oParser.add_option('-l', '--log', action='store_true', default=False, help='log errors to file')
-    (options, args) = oParser.parse_args()
+	oParser = optparse.OptionParser(usage='usage: %prog [options]\n' + __description__, version='%prog ' + __version__)
+	oParser.add_option('-f', '--file', default='', type='string', help='file to build an object from')
+	oParser.add_option('-d', '--dir', default='', type='string', help='dir to build an object from')
+	oParser.add_option('-m', '--mongo', action='store_true', default=False, help='dump to a mongodb database')
+	oParser.add_option('-v', '--verbose', action='store_true', default=False, help='verbose outpout')
+	oParser.add_option('-a', '--auto', action='store_true', default=False, help='auto run for web portal')
+	oParser.add_option('-l', '--log', action='store_true', default=False, help='log errors to file')
+	(options, args) = oParser.parse_args()
 
-    if options.log:
-	log = open("error_log",'w')    
+	if options.log:
+		log = open("error_log",'w')
 
-    if options.mongo:
-    	con = connect_to_mongo("localhost", 27017, "pdfs", "pdf_repo")
+	if options.mongo:
+		con = connect_to_mongo("localhost", 27017, "pdfs", "pdf_repo")
 
-    if options.file:
-    	output = build_obj(options.file)
-    	if options.mongo:
+	if options.file:
+		output = build_obj(options.file)
+		if options.mongo:
 			con.insert(json.loads(output))
-        if options.verbose:
+		if options.verbose:
 			print output
-    elif options.dir:
+	elif options.dir:
 		files = []
 		dirlist = os.listdir(options.dir)
 		for fname in dirlist:
@@ -217,39 +218,39 @@ def main():
 		if options.log:
 			log.close()
 
-    elif options.auto:
-	while True:
-	        queue = connect_to_mongo("localhost", 27017, "pdfs", "file_queue")
-        	malware = connect_to_mongo("localhost",27017,"pdfs","malware")
-		core = connect_to_mongo("localhost", 27017, "pdfs", "tests")
-		for row in queue.find({"processed":"false"},{"hash":1,"filename":1,"_id":0}):
-			row = json.dumps(row)
-			ruse = json.loads(row)
-			hash = ruse.get("hash")
-			filename = ruse.get("filename")
-                	print "proccessing " + filename
-	               	path = "/var/www/mop_rest/uploads/" + filename
-			hash = hash_maker.get_hash_data(path, "md5")
-			pres = core.find({"hash_data.file.md5":hash}).count()
-			if pres != 1:
-	                	output = build_obj(path)
-				try:
-                			core.insert(json.loads(output))
-					if options.verbose:
-						print file + " inserted"
-				except:
-					print "Something went wrong with" + filename
-					traceback.print_exc()
-					if options.log:
-						log.write("ERROR: " + file + "\n")
+	elif options.auto:
+		while True:
+			queue = connect_to_mongo("localhost", 27017, "pdfs", "file_queue")
+			malware = connect_to_mongo("localhost",27017,"pdfs","malware")
+			core = connect_to_mongo("localhost", 27017, "pdfs", "tests")
+			for row in queue.find({"processed":"false"},{"hash":1,"filename":1,"_id":0}):
+				row = json.dumps(row)
+				ruse = json.loads(row)
+				hash = ruse.get("hash")
+				filename = ruse.get("filename")
+				print "proccessing " + filename
+				path = "/var/www/mop_rest/uploads/" + filename
+				hash = hash_maker.get_hash_data(path, "md5")
+				pres = core.find({"hash_data.file.md5":hash}).count()
+				if pres != 1:
+					output = build_obj(path)
+					try:
+						core.insert(json.loads(output))
+						if options.verbose:
+							print file + " inserted"
+					except:
+						print "Something went wrong with" + filename
+						traceback.print_exc()
+						if options.log:
+							log.write("ERROR: " + file + "\n")
 
-				queue.update({"hash":hash},{"$set":{"processed":"true"}})
-        	        	print "processed " + filename
-        	time.sleep(20)
+					queue.update({"hash":hash},{"$set":{"processed":"true"}})
+					print "processed " + filename
+		time.sleep(20)
 
-    else:
-        oParser.print_help()
-        return
+	else:
+		oParser.print_help()
+		return
 
 if __name__ == '__main__':
-    main()
+	main()
