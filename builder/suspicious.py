@@ -1,4 +1,4 @@
-
+import re
 
 class isSuspicious():
     def __init__(self, ipdf):
@@ -51,7 +51,7 @@ class isSuspicious():
 
         for result in ipdf.virustotal_scan_results:
             if result != "":
-            self._scan_results = True
+                self._scan_results = True
             break
 
         if len(ipdf.suspicious_keywords) > 0:
@@ -72,7 +72,7 @@ class isSuspicious():
         return [ x for x in seq if x not in seen and not seen_add(x)]
 
     def check_raw_content(self,content,suspicious):
-        generic_shellcode ['%[a-z]....', '%[a-z]..', '\[a-z][0-9][0-9]','[a-z]\d{2}']
+        generic_shellcode = ['%[a-z]....', '%[a-z]..', '\[a-z][0-9][0-9]','[a-z]\d{2}']
         generic_flash = ['flash', 'swf']
         generic_adobe = ['app.','/js','/javascript','/JavaScript','/openAction','viewerVersion']
         generic_js = ['.this','function', 'eval', 'unescape\(', '.replace','.substring','fromCharCode','byteToChar','toString','setTimeOut']
