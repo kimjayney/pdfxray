@@ -60,18 +60,20 @@ def encoder_cleaner(stream_data):
 #	return stream_data
 
     data = []
-    for char in stream_data:
-        if is_ascii(char):
-            data.append(char)
-        else:
-            try:
-                char = char.decode('utf-8','replace')
+    try:
+        for char in stream_data:
+            if is_ascii(char):
                 data.append(char)
-            except:
-                char = char.decode('utf-16','replace')
-                data.append(char)
-
-    return ''.join(data)
+            else:
+                try:
+                    char = char.decode('utf-8','replace')
+                    data.append(char)
+                except:
+                    char = char.decode('utf-16','replace')
+                    data.append(char)
+        return ''.join(data)
+    except TypeError:
+        return stream_data
 
 def snatch_contents(file):
     pdfParser = PDFParser()
