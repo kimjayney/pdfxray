@@ -3,3 +3,5 @@ pymongo==2.1
 matplotlib==1.1.0
 numpy==1.6.1
 ghostscript==0.4.1
+simplejson==2.3.2
+setuptools==0.6c11
